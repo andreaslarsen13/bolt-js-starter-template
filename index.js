@@ -57,22 +57,143 @@ app.event('app_home_opened', async ({ event, client, logger }) => {
 app.action('draw_card', async ({ ack, body, client, logger }) => {
   console.log('🎴 draw_card action triggered by user:', body.user.id);
   
-  // Acknowledge immediately for instant button feedback
+  // Acknowledge immediately and update Home tab to show loading state
   await ack();
+  console.log('✅ Button acknowledged');
+  
+  // Update Home tab to show loading/disabled state
+  try {
+    await client.views.publish({
+      user_id: body.user.id,
+      view: {
+        type: 'home',
+        blocks: [
+          {
+            type: 'header',
+            text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: 'Draw a daily oracle card for insight or reflection.',
+            },
+          },
+          {
+            type: 'divider',
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '_Generating your oracle card..._',
+            },
+          },
+        ],
+      },
+    });
+  } catch (error) {
+    console.error('❌ Error updating Home tab to loading state:', error);
+  }
   
   // Generate and send oracle card asynchronously (non-blocking)
   (async () => {
     try {
+      console.log('🔄 Starting oracle card generation...');
       const oracle = await generateOracleCard();
       console.log('🔮 Oracle message generated:', oracle.substring(0, 50) + '...');
 
+      console.log('📤 Sending message to user:', body.user.id);
       await client.chat.postMessage({
         channel: body.user.id,
         text: `*Your Oracle Card*\n${oracle}`,
       });
       console.log('✅ Oracle card sent to user:', body.user.id);
+      
+      // Restore the original Home tab with button enabled
+      await client.views.publish({
+        user_id: body.user.id,
+        view: {
+          type: 'home',
+          blocks: [
+            {
+              type: 'header',
+              text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: 'Draw a daily oracle card for insight or reflection.',
+              },
+            },
+            {
+              type: 'divider',
+            },
+            {
+              type: 'actions',
+              elements: [
+                {
+                  type: 'button',
+                  text: { type: 'plain_text', text: 'Draw Oracle Card' },
+                  style: 'primary',
+                  action_id: 'draw_card',
+                },
+              ],
+            },
+          ],
+        },
+      });
     } catch (error) {
       console.error('❌ Error generating or sending oracle card:', error);
+      console.error('Error details:', error.message);
+      console.error('Stack trace:', error.stack);
+      
+      // Restore Home tab even on error
+      try {
+        await client.views.publish({
+          user_id: body.user.id,
+          view: {
+            type: 'home',
+            blocks: [
+              {
+                type: 'header',
+                text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
+              },
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: 'Draw a daily oracle card for insight or reflection.',
+                },
+              },
+              {
+                type: 'divider',
+              },
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: '_Something went wrong. Please try again._',
+                },
+              },
+              {
+                type: 'actions',
+                elements: [
+                  {
+                    type: 'button',
+                    text: { type: 'plain_text', text: 'Draw Oracle Card' },
+                    style: 'primary',
+                    action_id: 'draw_card',
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      } catch (restoreError) {
+        console.error('❌ Error restoring Home tab:', restoreError);
+      }
     }
   })();
 });
