@@ -1,104 +1,278 @@
-# Bolt for JavaScript Template App
+# ✨ Oracle Card Slack App
 
-This is a generic Bolt for JavaScript template app used to build out Slack apps.
+A Slack app that generates mystical oracle card messages using OpenAI. Users can click a "Draw Oracle Card" button in the app's Home tab to receive AI-generated wisdom and inspiration.
 
-## Setup
+## Features
 
-Before getting started, make sure you have a development workspace where you have permissions to install apps. If you don’t have one setup, go ahead and [create one](https://slack.com/create).
+- **Home Tab Interface**: Beautiful, simple UI with a single button to draw oracle cards
+- **AI-Powered Messages**: Uses OpenAI's GPT-4o-mini to generate unique, mystical oracle messages
+- **Socket Mode**: No need for a public URL - uses Slack's Socket Mode for secure communication
+- **Instant DMs**: Oracle messages are sent directly to users as private messages
 
-### Developer Program
+## Tech Stack
 
-Join the [Slack Developer Program](https://api.slack.com/developer-program) for exclusive access to sandbox environments for building and testing your apps, tooling, and resources created to help you build and grow.
+- **Node.js** v18+
+- **@slack/bolt** - Official Slack SDK for JavaScript
+- **OpenAI API** - For generating oracle card messages
+- **Socket Mode** - Secure WebSocket connection (no public URL needed)
+- **Railway** - Recommended deployment platform
 
-## Installation
+## Prerequisites
 
-#### Create a Slack App
+1. A Slack workspace where you have permissions to install apps
+2. OpenAI API account with an API key
+3. Node.js v18 or higher installed
 
-1. Open [https://api.slack.com/apps/new](https://api.slack.com/apps/new) and choose "From an app manifest"
-2. Choose the workspace you want to install the application to
-3. Copy the contents of [manifest.json](./manifest.json) into the text box that says `*Paste your manifest code here*` (within the JSON tab) and click _Next_
-4. Review the configuration and click _Create_
-5. Click _Install to Workspace_ and _Allow_ on the screen that follows. You'll then be redirected to the App Configuration dashboard.
+## Slack App Setup
 
-#### Environment Variables
+### 1. Create Your Slack App
 
-Before you can run the app, you'll need to store some environment variables.
+1. Go to [api.slack.com/apps](https://api.slack.com/apps) and click **Create New App**
+2. Choose **From an app manifest**
+3. Select your workspace
+4. Copy the contents of [manifest.json](./manifest.json) into the JSON tab
+5. Click **Create**
+6. Review permissions and click **Install to Workspace**
 
-1. Rename `.env.sample` to `.env`
-2. Open your apps configuration page from [this list](https://api.slack.com/apps), click _OAuth & Permissions_ in the left hand menu, then copy the _Bot User OAuth Token_ into your `.env` file under `SLACK_BOT_TOKEN`
-3. Click _Basic Information_ from the left hand menu and follow the steps in the _App-Level Tokens_ section to create an app-level token with the `connections:write` scope. Copy that token into your `.env` as `SLACK_APP_TOKEN`.
+### 2. Required Scopes
 
-### Setup Your Local Project
+Your app needs these OAuth scopes (already in manifest.json):
+- `chat:write` - Send messages as the bot
+- `im:write` - Send direct messages to users
+- `users:read` - Read user information
+- `channels:read` - Read channel information
 
-```zsh
-# Clone this project onto your machine
-git clone https://github.com/slack-samples/bolt-js-starter-template.git
+### 3. Enable Socket Mode
 
-# Change into this project directory
-cd bolt-js-starter-template
+1. Go to **Socket Mode** in your app settings
+2. Enable Socket Mode
+3. Under **Event Subscriptions**, enable events and subscribe to:
+   - `app_home_opened` - Triggered when users open the app's Home tab
+
+### 4. Get Your Tokens
+
+**Bot Token:**
+1. Go to **OAuth & Permissions**
+2. Copy the **Bot User OAuth Token** (starts with `xoxb-`)
+
+**App Token:**
+1. Go to **Basic Information**
+2. Scroll to **App-Level Tokens**
+3. Click **Generate Token and Scopes**
+4. Name it "socket-token" and add the `connections:write` scope
+5. Copy the token (starts with `xapp-`)
+
+## Local Development Setup
+
+### 1. Clone and Install
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/oracle-card-slack-app.git
+cd oracle-card-slack-app
 
 # Install dependencies
 npm install
+```
 
-# Run a Bolt server that restarts after file changes
-npm run dev
+### 2. Configure Environment Variables
 
-# Run a Bolt server
+Create a `.env` file in the root directory:
+
+```bash
+# Slack Bot Token (from OAuth & Permissions)
+SLACK_BOT_TOKEN=xoxb-your-bot-token-here
+
+# Slack App Token (from Basic Information > App-Level Tokens)
+SLACK_APP_TOKEN=xapp-your-app-token-here
+
+# OpenAI API Key (from platform.openai.com)
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# Environment
+NODE_ENV=development
+```
+
+### 3. Start the App
+
+```bash
+# Start the app
 npm start
+
+# Or use development mode with auto-restart
+npm run dev
 ```
 
-#### Linting
-
-```zsh
-# Run lint for code formatting and linting
-npm run lint
+You should see:
+```
+⚡ Oracle App running with Socket Mode
 ```
 
-#### Testing
+## Usage
 
-```zsh
-# Run test for unit tests
-npm test
-```
+1. **Open the App**: In Slack, go to the Apps section in your sidebar and click on "Oracle Cards"
+2. **View Home Tab**: You'll see a beautiful interface with a "Draw Oracle Card" button
+3. **Draw a Card**: Click the button to receive your mystical oracle message
+4. **Receive Wisdom**: The oracle message will be sent to you as a direct message
 
 ## Project Structure
 
-### `manifest.json`
-
-`manifest.json` is a configuration for Slack apps. With a manifest, you can create an app with a pre-defined configuration, or adjust the configuration of an existing app.
-
-### `app.js`
-
-`app.js` is the entry point for the application and is the file you'll run to start the server. This project aims to keep this file as thin as possible, primarily using it as a way to route inbound requests.
-
-### `/listeners`
-
-Every incoming request is routed to a "listener". Inside this directory, we group each listener based on the Slack Platform feature used, so `/listeners/shortcuts` handles incoming [Shortcuts](https://api.slack.com/interactivity/shortcuts) requests, `/listeners/views` handles [View submissions](https://api.slack.com/reference/interaction-payloads/views#view_submission) and so on.
-
-## App Distribution / OAuth
-
-Only implement OAuth if you plan to distribute your application across multiple workspaces. A separate `app-oauth.js` file can be found with relevant OAuth settings.
-
-When using OAuth, Slack requires a public URL where it can send requests. In this template app, we've used [`ngrok`](https://ngrok.com/download). Checkout [this guide](https://ngrok.com/docs#getting-started-expose) for setting it up.
-
-Start `ngrok` to access the app on an external network and create a redirect URL for OAuth.
-
 ```
-ngrok http 3000
+oracle-card-slack-app/
+├── index.js              # Main application entry point
+├── utils/
+│   └── oracle.js         # OpenAI integration for generating oracle messages
+├── package.json          # Dependencies and scripts
+├── manifest.json         # Slack app configuration
+├── .env                  # Environment variables (create this)
+└── README.md            # This file
 ```
 
-This output should include a forwarding address for `http` and `https` (we'll use `https`). It should look something like the following:
+### `index.js`
 
+The main application file that:
+- Initializes the Bolt app with Socket Mode
+- Handles the `app_home_opened` event to display the Home tab
+- Handles the `draw_card` action when users click the button
+- Sends oracle messages to users
+
+### `utils/oracle.js`
+
+Contains the OpenAI integration:
+- Connects to OpenAI API
+- Generates mystical oracle card messages
+- Returns formatted text for display in Slack
+
+## Deployment to Railway
+
+### 1. Push to GitHub
+
+```bash
+git init
+git add .
+git commit -m "Initial commit: Oracle Card Slack App"
+git remote add origin https://github.com/your-username/oracle-card-slack-app.git
+git push -u origin main
 ```
-Forwarding   https://3cb89939.ngrok.io -> http://localhost:3000
+
+### 2. Deploy to Railway
+
+1. Go to [railway.app](https://railway.app) and sign in
+2. Click **New Project** → **Deploy from GitHub repo**
+3. Select your repository
+4. Add environment variables in Railway dashboard:
+   ```
+   SLACK_BOT_TOKEN=xoxb-...
+   SLACK_APP_TOKEN=xapp-...
+   OPENAI_API_KEY=sk-...
+   NODE_ENV=production
+   ```
+5. Railway will automatically detect Node.js and run `npm start`
+6. Your app will deploy and maintain the Socket Mode connection automatically
+
+### Railway Benefits
+
+- ✅ Always-on connection (required for Socket Mode)
+- ✅ Automatic restarts on crashes
+- ✅ Easy environment variable management
+- ✅ Free tier available
+- ✅ No need for a public URL
+
+## Customization
+
+### Modify Oracle Prompts
+
+Edit the prompt in `utils/oracle.js`:
+
+```javascript
+const prompt = 'Generate a mystical oracle card message in one or two sentences. It should sound wise, poetic, and reflective.';
 ```
 
-Navigate to **OAuth & Permissions** in your app configuration and click **Add a Redirect URL**. The redirect URL should be set to your `ngrok` forwarding address with the `slack/oauth_redirect` path appended. For example:
+Try different prompts like:
+- "Generate a tarot-style reading with deep spiritual insight"
+- "Create an encouraging affirmation with mystical wisdom"
+- "Give a zen-like philosophical message for daily reflection"
 
+### Change the AI Model
+
+In `utils/oracle.js`, you can change the model:
+
+```javascript
+model: 'gpt-4o-mini',  // Fast and cost-effective
+// or
+model: 'gpt-4o',       // More sophisticated responses
 ```
-https://3cb89939.ngrok.io/slack/oauth_redirect
+
+### Customize the Home Tab
+
+In `index.js`, modify the `blocks` array in the `app_home_opened` handler to change:
+- Header text and emojis
+- Description text
+- Button text and style
+- Add more UI elements
+
+## Troubleshooting
+
+### App Not Responding
+
+1. Check that Socket Mode is enabled in Slack app settings
+2. Verify your tokens are correct in `.env`
+3. Ensure the app is running (`npm start`)
+4. Check console for error messages
+
+### OpenAI Errors
+
+1. Verify your OpenAI API key is valid
+2. Check you have credits in your OpenAI account
+3. Ensure you have access to the `gpt-4o-mini` model
+
+### Permission Errors
+
+1. Reinstall the app to your workspace
+2. Verify all required scopes are added
+3. Check the app is subscribed to `app_home_opened` event
+
+## Development Commands
+
+```bash
+# Start the app
+npm start
+
+# Development mode with auto-restart
+npm run dev
+
+# Run linting
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Run tests
+npm test
 ```
 
-## Make This Template a Code Assistant App
+## API Costs
 
-Take your exploration a step further and make this template an [AI app](https://tools.slack.dev/bolt-js/concepts/ai-apps) with the use of a [Hugging Face](https://huggingface.co) model. Follow [this tutorial](https://tools.slack.dev/bolt-js/tutorials/code-assistant) to find out how.
+- **Slack API**: Free
+- **OpenAI API**: 
+  - `gpt-4o-mini`: ~$0.00015 per oracle card message
+  - Very cost-effective for typical usage
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!
+
+## License
+
+MIT License - See [LICENSE](./LICENSE) file for details
+
+## Support
+
+- [Slack API Documentation](https://api.slack.com/)
+- [Bolt for JavaScript](https://slack.dev/bolt-js/)
+- [OpenAI API Documentation](https://platform.openai.com/docs)
+- [Railway Documentation](https://docs.railway.app/)
+
+---
+
+Built with ✨ using Slack Bolt for JavaScript and OpenAI

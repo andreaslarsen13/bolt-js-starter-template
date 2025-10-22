@@ -1,14 +1,14 @@
 {
-  "name": "bolt-js-starter-template",
+  "name": "oracle-card-slack-app",
   "version": "1.0.0",
-  "description": "A scaffold template for Slack apps",
+  "description": "A Slack app that generates mystical oracle card messages using OpenAI",
   "type": "module",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "node --watch app.js",
+    "dev": "node --watch index.js",
     "lint": "npx @biomejs/biome check *.js listeners",
     "lint:fix": "npx @biomejs/biome check --write *.js listeners",
-    "start": "node app.js",
+    "start": "node index.js",
     "test": "node --test tests/**/*.spec.js"
   },
   "author": "Slack Technologies, LLC",
@@ -16,7 +16,9 @@
   "keywords": [
     "slack",
     "bolt",
-    "slackapi"
+    "slackapi",
+    "oracle",
+    "openai"
   ],
   "repository": {
     "type": "git",
@@ -27,7 +29,8 @@
   },
   "dependencies": {
     "@slack/bolt": "^4.4.0",
-    "dotenv": "~17.2.3"
+    "dotenv": "~17.2.3",
+    "openai": "^4.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4"
