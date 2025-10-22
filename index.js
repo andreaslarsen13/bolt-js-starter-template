@@ -64,7 +64,7 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
 
     await client.chat.postMessage({
       channel: body.user.id,
-      text: `✨ *Your Oracle Card* ✨\n${oracle}`,
+      text: `*Your Oracle Card*\n${oracle}`,
     });
     console.log('✅ Oracle card sent to user:', body.user.id);
   } catch (error) {
