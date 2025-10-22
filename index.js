@@ -56,20 +56,25 @@ app.event('app_home_opened', async ({ event, client, logger }) => {
 
 app.action('draw_card', async ({ ack, body, client, logger }) => {
   console.log('🎴 draw_card action triggered by user:', body.user.id);
+  
+  // Acknowledge immediately for instant button feedback
   await ack();
   
-  try {
-    const oracle = await generateOracleCard();
-    console.log('🔮 Oracle message generated:', oracle.substring(0, 50) + '...');
+  // Generate and send oracle card asynchronously (non-blocking)
+  (async () => {
+    try {
+      const oracle = await generateOracleCard();
+      console.log('🔮 Oracle message generated:', oracle.substring(0, 50) + '...');
 
-    await client.chat.postMessage({
-      channel: body.user.id,
-      text: `*Your Oracle Card*\n${oracle}`,
-    });
-    console.log('✅ Oracle card sent to user:', body.user.id);
-  } catch (error) {
-    console.error('❌ Error generating or sending oracle card:', error);
-  }
+      await client.chat.postMessage({
+        channel: body.user.id,
+        text: `*Your Oracle Card*\n${oracle}`,
+      });
+      console.log('✅ Oracle card sent to user:', body.user.id);
+    } catch (error) {
+      console.error('❌ Error generating or sending oracle card:', error);
+    }
+  })();
 });
 
 (async () => {
