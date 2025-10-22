@@ -22,14 +22,17 @@ app.event('app_home_opened', async ({ event, client, logger }) => {
         blocks: [
           {
             type: 'header',
-            text: { type: 'plain_text', text: '✨ Oracle Cards' },
+            text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
           },
           {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: 'Click below to draw your daily oracle card.',
+              text: 'Draw a daily oracle card for insight or reflection.',
             },
+          },
+          {
+            type: 'divider',
           },
           {
             type: 'actions',
