@@ -22,13 +22,13 @@ app.event('app_home_opened', async ({ event, client, logger }) => {
         blocks: [
           {
             type: 'header',
-            text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
+            text: { type: 'plain_text', text: "Ginny Clarke's Daily Affirmations" },
           },
           {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: 'Draw a daily oracle card for insight or reflection.',
+              text: 'Draw a daily affirmation for insight or reflection.',
             },
           },
           {
@@ -39,7 +39,7 @@ app.event('app_home_opened', async ({ event, client, logger }) => {
             elements: [
               {
                 type: 'button',
-                text: { type: 'plain_text', text: 'Draw Oracle Card' },
+                text: { type: 'plain_text', text: 'Draw Daily Affirmation' },
                 style: 'primary',
                 action_id: 'draw_card',
               },
@@ -70,7 +70,7 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
         blocks: [
           {
             type: 'header',
-            text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
+            text: { type: 'plain_text', text: "Ginny Clarke's Daily Affirmations" },
           },
           {
             type: 'section',
@@ -86,7 +86,7 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: '_Generating your oracle card..._',
+              text: '_Generating your affirmation..._',
             },
           },
         ],
@@ -118,13 +118,13 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
           blocks: [
             {
               type: 'header',
-              text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
+              text: { type: 'plain_text', text: "Ginny Clarke's Daily Affirmations" },
             },
             {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: 'Draw a daily oracle card for insight or reflection.',
+                text: 'Draw a daily affirmation for insight or reflection.',
               },
             },
             {
@@ -135,7 +135,7 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
               elements: [
                 {
                   type: 'button',
-                  text: { type: 'plain_text', text: 'Draw Oracle Card' },
+                  text: { type: 'plain_text', text: 'Draw Daily Affirmation' },
                   style: 'primary',
                   action_id: 'draw_card',
                 },
@@ -158,13 +158,13 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
             blocks: [
               {
                 type: 'header',
-                text: { type: 'plain_text', text: "Ginny Clarke's Oracle Cards" },
+                text: { type: 'plain_text', text: "Ginny Clarke's Daily Affirmations" },
               },
               {
                 type: 'section',
                 text: {
                   type: 'mrkdwn',
-                  text: 'Draw a daily oracle card for insight or reflection.',
+                  text: 'Draw a daily affirmation card for insight or reflection.',
                 },
               },
               {
@@ -182,7 +182,7 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
                 elements: [
                   {
                     type: 'button',
-                    text: { type: 'plain_text', text: 'Draw Oracle Card' },
+                    text: { type: 'plain_text', text: 'Draw Daily Affirmation' },
                     style: 'primary',
                     action_id: 'draw_card',
                   },
