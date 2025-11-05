@@ -11,6 +11,7 @@ export async function generateOracleCard() {
       id: process.env.OPENAI_PROMPT_ID,
       version: process.env.OPENAI_PROMPT_VERSION,
     },
+    input: "generate",
   });
   return res.output_text.trim();
 }
