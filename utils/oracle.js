@@ -9,7 +9,7 @@ export async function generateOracleCard() {
   const res = await openai.responses.create({
     prompt: {
       id: process.env.OPENAI_PROMPT_ID,
-      version: '4',
+      version: process.env.OPENAI_PROMPT_VERSION,
     },
   });
   return res.output_text.trim();
