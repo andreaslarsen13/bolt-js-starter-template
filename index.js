@@ -76,7 +76,7 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: 'Draw a daily oracle card for insight or reflection.',
+              text: 'Draw a daily affirmation for insight or reflection.',
             },
           },
           {
@@ -106,7 +106,7 @@ app.action('draw_card', async ({ ack, body, client, logger }) => {
       console.log('📤 Sending message to user:', body.user.id);
       await client.chat.postMessage({
         channel: body.user.id,
-        text: `*Your Oracle Card*\n${oracle}`,
+        text: oracle,
       });
       console.log('✅ Oracle card sent to user:', body.user.id);
       
